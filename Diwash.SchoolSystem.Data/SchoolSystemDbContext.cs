@@ -1,8 +1,5 @@
 ﻿using Diwash.SchoolSystem.Data.Entities;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Diwash.SchoolSystem.Data
 {
@@ -14,7 +11,7 @@ namespace Diwash.SchoolSystem.Data
         }
 
         public DbSet<Student> Students { get; set; }
-        public DbSet<Grade> Grades { get; set; }
+        public DbSet<Class> Classes { get; set; }
 
     }
 }

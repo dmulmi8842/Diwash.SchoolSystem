@@ -1,4 +1,5 @@
 using Diwash.SchoolSystem.Data;
+using Diwash.SchoolSystem.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -33,7 +34,11 @@ namespace Diwash.SchoolSystem
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Diwash.SchoolSystem", Version = "v1" });
-            });
+            }); 
+
+            services.AddServices();
+            //inserting initial data in the database during startup
+            services.Seed();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

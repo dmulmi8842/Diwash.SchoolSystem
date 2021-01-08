@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Diwash.SchoolSystem.Data.Migrations
 {
     [DbContext(typeof(SchoolSystemDbContext))]
-    [Migration("20210105234700_MySchoolDatabaseMigration")]
-    partial class MySchoolDatabaseMigration
+    [Migration("20210106223959_StudentNameRequired")]
+    partial class StudentNameRequired
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,66 +21,55 @@ namespace Diwash.SchoolSystem.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("Diwash.SchoolSystem.Data.Entities.Grade", b =>
+            modelBuilder.Entity("Diwash.SchoolSystem.Data.Entities.Class", b =>
                 {
-                    b.Property<int>("GradeId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
-                    b.Property<string>("GradeName")
+                    b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Section")
-                        .HasColumnType("nvarchar(max)");
+                    b.HasKey("Id");
 
-                    b.HasKey("GradeId");
-
-                    b.ToTable("Grades");
+                    b.ToTable("Classes");
                 });
 
             modelBuilder.Entity("Diwash.SchoolSystem.Data.Entities.Student", b =>
                 {
-                    b.Property<int>("StudentId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .UseIdentityColumn();
 
+                    b.Property<int?>("ClassId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime?>("DateOfBirth")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("GradeId")
-                        .HasColumnType("int");
-
-                    b.Property<float>("Height")
-                        .HasColumnType("real");
-
-                    b.Property<byte[]>("Photo")
-                        .HasColumnType("varbinary(max)");
-
-                    b.Property<string>("StudentName")
+                    b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<float>("Weight")
-                        .HasColumnType("real");
+                    b.HasKey("Id");
 
-                    b.HasKey("StudentId");
-
-                    b.HasIndex("GradeId");
+                    b.HasIndex("ClassId");
 
                     b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Diwash.SchoolSystem.Data.Entities.Student", b =>
                 {
-                    b.HasOne("Diwash.SchoolSystem.Data.Entities.Grade", "Grade")
+                    b.HasOne("Diwash.SchoolSystem.Data.Entities.Class", "Class")
                         .WithMany("Students")
-                        .HasForeignKey("GradeId");
+                        .HasForeignKey("ClassId");
 
-                    b.Navigation("Grade");
+                    b.Navigation("Class");
                 });
 
-            modelBuilder.Entity("Diwash.SchoolSystem.Data.Entities.Grade", b =>
+            modelBuilder.Entity("Diwash.SchoolSystem.Data.Entities.Class", b =>
                 {
                     b.Navigation("Students");
                 });
