@@ -2,18 +2,11 @@ using Diwash.SchoolSystem.Data;
 using Diwash.SchoolSystem.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Diwash.SchoolSystem
 {
@@ -34,11 +27,19 @@ namespace Diwash.SchoolSystem
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Diwash.SchoolSystem", Version = "v1" });
-            }); 
+                //c.OperationFilter<UserHeaderParameter>();
+            });
 
+            //the below code register the interface service with its concrete type
+            services.AddScoped<IClassService, ClassService>();
+            services.AddRazorPages();
+
+            //the below code uses DependencyInjectionSetup class which is different then from using above AddScope method
             services.AddServices();
             //inserting initial data in the database during startup
             services.Seed();
+
+            //services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

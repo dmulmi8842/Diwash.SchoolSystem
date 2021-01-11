@@ -4,17 +4,16 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 namespace Diwash.SchoolSystem.Services
 {
-    public interface IClassService
+    public class ClassService : IClassService
     {
-        Task<int> CreateClass(Class newClass);
-        Task<List<Class>> GetAllClasses();
-    }
-    internal class ClassService : IClassService
-    {
-        private string[] validClasses = new string[] { "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10" };
+        private static readonly string[] validClasses = new[]
+        {
+            "Class 1", "Class 2", "Class 3", "Class 4", "Class 5", "Class 6", "Class 7", "Class 8", "Class 9", "Class 10"
+        };
         private readonly SchoolSystemDbContext _dbContext;
 
         public ClassService(SchoolSystemDbContext dbContext)
@@ -22,6 +21,7 @@ namespace Diwash.SchoolSystem.Services
             this._dbContext = dbContext;
         }
 
+        //create class
         public async Task<int> CreateClass(Class newClass)
         {
             if (!isValidClass(newClass.Name)) throw new Exception("Class is not available.");
@@ -40,10 +40,28 @@ namespace Diwash.SchoolSystem.Services
             return false;
         }
 
+        //get all classes
         public async Task<List<Class>> GetAllClasses()
         {
             return await _dbContext.Classes.ToListAsync();
         }
 
+        //update class
+        public async Task<bool> UpdateClass(int id, Class updatedClass)
+        {
+            if (id != updatedClass.Id) return false;
+            _dbContext.Update(updatedClass);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
+        //delete class
+        public async Task<bool> DeleteClass(int id)
+        {
+            var getClass = await _dbContext.Classes.SingleOrDefaultAsync(x => x.Id == id);
+            if (getClass == null) return false;
+            _dbContext.Remove(getClass);
+            await _dbContext.SaveChangesAsync();
+            return true;
+        }
     }
 }

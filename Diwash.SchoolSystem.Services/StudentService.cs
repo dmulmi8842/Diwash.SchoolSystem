@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace Diwash.SchoolSystem.Services
 {
@@ -14,6 +15,7 @@ namespace Diwash.SchoolSystem.Services
         Task<List<Student>> GetStudents(string nameKeyword);
         Task<Student> GetStudent(int id);
         Task<bool> DeleteStudent(int id);
+        Task<bool> UpdateStudent(int id, Student student);
     }
     internal class StudentService : IStudentService
     {
@@ -23,6 +25,8 @@ namespace Diwash.SchoolSystem.Services
         {
             this._dbContext = dbContext;
         }
+
+        //create student
         public async Task<int> CreateStudent(Student student)
         {
             if (!student.DateOfBirth.HasValue) throw new Exception("Date of Birth should have value.");
@@ -54,6 +58,16 @@ namespace Diwash.SchoolSystem.Services
         {
             var student = await _dbContext.Students.SingleOrDefaultAsync(x => x.Id == id);
             return student;
+        }
+
+        //update student
+        public async Task<bool> UpdateStudent(int id, Student student)
+        {
+            if (id != student.Id)
+                return false;
+            _dbContext.Students.Update(student);
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
 
         //delete student by id

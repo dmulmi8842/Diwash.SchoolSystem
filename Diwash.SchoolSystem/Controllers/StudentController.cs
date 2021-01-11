@@ -1,6 +1,7 @@
 ﻿using Diwash.SchoolSystem.Data.Entities;
 using Diwash.SchoolSystem.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -11,12 +12,15 @@ namespace Diwash.SchoolSystem.Controllers
     public class StudentController : ControllerBase
     {
         private readonly IStudentService _studentService;
+        private readonly ILogger<StudentController> _logger;
 
-        public StudentController(IStudentService studentService)
+        public StudentController(IStudentService studentService, ILogger<StudentController> logger)
         {
             this._studentService = studentService;
+            this._logger = logger;
         }
 
+        //create student
         [HttpPost]
         public async Task<ActionResult<int>> Create([FromBody] Student student)
         {
@@ -39,15 +43,24 @@ namespace Diwash.SchoolSystem.Controllers
             return student;
         }
 
+        //update student
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateStudent(int id, [FromBody] Student student)
+        {
+            bool checkstudent = await _studentService.UpdateStudent(id, student);
+            if (checkstudent == false)
+                return BadRequest();
+            return NoContent();
+        }
+
         //delete student by id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
-            if (await _studentService.DeleteStudent(id) == false)
+            bool checkstudent = await _studentService.DeleteStudent(id);
+            if (checkstudent == false)
                 return BadRequest();
-            await _studentService.DeleteStudent(id);
             return NoContent();
         }
-
     }
 }
